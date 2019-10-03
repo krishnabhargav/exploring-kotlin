@@ -15,6 +15,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 buildscript {
@@ -26,6 +27,12 @@ buildscript {
 //application dependencies
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    compile(kotlin("reflect"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.2")
+    implementation("com.google.code.gson:gson:2.8.5")
+    compile("org.slf4j:slf4j-simple:1.7.26")
+    compile("io.javalin:javalin:3.5.0")
 }
 
 
