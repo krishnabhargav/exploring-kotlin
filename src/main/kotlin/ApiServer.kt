@@ -6,19 +6,13 @@ import io.javalin.http.Context
 import io.javalin.plugin.json.FromJsonMapper
 import io.javalin.plugin.json.JavalinJson
 import io.javalin.plugin.json.ToJsonMapper
-import io.javalin.plugin.openapi.ModelConverterFactory
 import io.javalin.plugin.openapi.OpenApiOptions
 import io.javalin.plugin.openapi.OpenApiPlugin
 import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
-import io.javalin.plugin.openapi.annotations.OpenApiRequestBody
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
 import io.javalin.plugin.openapi.ui.SwaggerOptions
-import io.swagger.v3.core.converter.AnnotatedType
-import io.swagger.v3.core.converter.ModelConverter
-import io.swagger.v3.core.converter.ModelConverterContext
 import io.swagger.v3.oas.models.info.Info
-import io.swagger.v3.oas.models.media.Schema
 
 
 private val toJsonMapper = object : ToJsonMapper {
@@ -40,9 +34,8 @@ fun main() {
     JavalinJson.fromJsonMapper = object : FromJsonMapper {
         override fun <T> map(json: String, targetClass: Class<T>): T = Json.fromJsonWithClass(json, targetClass)
     }
-    app.get("/") { ctx ->
-        ctx.result("Hello, World!")
-    }
+    app.get("/", EmployeeController::hello)
+
     app.exception(Exception::class.java) { e, ctx ->
         e.printStackTrace()
     }
@@ -55,6 +48,9 @@ fun main() {
         }
     }
 }
+
+typealias Res = OpenApiResponse
+typealias Cont = OpenApiContent
 
 object EmployeeController {
 
@@ -70,8 +66,14 @@ object EmployeeController {
             Employee(2, listOf(Device.Laptop("Macbook Pro"), Device.Phone("IPhone", "T-Mobile")))
     )
 
+    @OpenApi(responses = [Res("200", [Cont(Employee::class, true, "application/json")])])
     fun allEmployees(ctx: Context) {
         ctx.json(employees)
+    }
+
+    @OpenApi(responses = [Res("200", [Cont(String::class)])])
+    fun hello(ctx: Context) {
+        ctx.result("hello")
     }
 
     fun byId(ctx: Context) {
