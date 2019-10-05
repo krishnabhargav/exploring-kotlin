@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: exploring-kotlin
+spec:
+  containers:
+    - name: exploring-kotlin
+      image: capsulecares/exploring-kotlin
+      imagePullPolicy: Never
