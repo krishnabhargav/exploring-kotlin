@@ -15,6 +15,8 @@ import io.javalin.plugin.openapi.ui.SwaggerOptions
 import io.swagger.v3.oas.models.info.Info
 
 
+//javalin server with custom serializer, and openapi/swagger enabled.
+
 private val toJsonMapper = object : ToJsonMapper {
     override fun map(obj: Any): String = Json.toJson(obj)
 }

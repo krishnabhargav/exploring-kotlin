@@ -22,4 +22,8 @@ dependencies {
     //open api
     implementation("io.swagger.core.v3:swagger-core:2.0.9")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
+
+    //prometheus
+    implementation("io.micrometer:micrometer-core:latest.release")
+    implementation("io.micrometer:micrometer-registry-prometheus:latest.release")
 }
