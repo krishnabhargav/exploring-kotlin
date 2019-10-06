@@ -1,9 +1,32 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: exploring-kotlin
 spec:
-  containers:
-    - name: exploring-kotlin
-      image: capsulecares/exploring-kotlin
-      imagePullPolicy: Never
+  replicas: 3
+  selector:
+    matchLabels:
+      app: exploring-kotlin
+  template:
+    metadata:
+      labels:
+        app: exploring-kotlin
+    spec:
+      containers:
+        - image: capsulecares/exploring-kotlin
+          imagePullPolicy: Never
+          name: exploring-kotlin
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: exploring-kotlin-service
+spec:
+  type: NodePort
+  selector:
+    app: exploring-kotlin
+  ports:
+    - port: 7000
+      nodePort: 30001
