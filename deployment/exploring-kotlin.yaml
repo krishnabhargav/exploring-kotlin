@@ -16,6 +16,9 @@ spec:
         - image: capsulecares/exploring-kotlin
           imagePullPolicy: Never
           name: exploring-kotlin
+          envFrom:
+            - configMapRef:
+                name: exploring-kotlin-config
 
 ---
 
@@ -28,5 +31,5 @@ spec:
   selector:
     app: exploring-kotlin
   ports:
-    - port: 7000
+    - port: 8000
       nodePort: 30001

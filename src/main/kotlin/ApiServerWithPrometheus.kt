@@ -11,7 +11,10 @@ fun main() {
     val app = Javalin.create { config ->
         config.registerPlugin(MicrometerPlugin())
     }
-    app.start(7000)
+    //docker run -e SERVER_PORT='8000' -p 8000:8000 capsulecares/exploring-kotlin:latest
+    val portNumber = System.getenv("SERVER_PORT")?.toInt() ?: 7000
+    println("Reading port from environment: $portNumber")
+    app.start(portNumber)
 
     //by default a global registry gets used by MicrometerPlugin
     //so lets add prometheus registry
