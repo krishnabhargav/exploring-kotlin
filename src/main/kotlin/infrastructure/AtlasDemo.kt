@@ -44,4 +44,7 @@ fun main() = runBlocking {
         }
         is Result.Failure -> print("Failure Occurred: " + readResult.error)
     }
+
+    Inputs.close()
+    Outputs.close()
 }
