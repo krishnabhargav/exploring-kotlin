@@ -1,11 +1,26 @@
 plugins {
     val kotlinVersion = "1.3.50"
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
+    id("com.google.cloud.tools.jib") version "1.7.0"
 }
+
+//jib helps generating docker image
+jib.from.image = "openjdk:13-jdk-slim"
+jib.container.mainClass = "ApiServerWithPrometheusKt"
 
 repositories {
     mavenCentral()
-    jcenter()
+    jcenter {
+        this.url = uri("https://capsule.jfrog.io/capsule/libs-release")
+        credentials {
+            val au = System.getenv("ARTIFACTORY_CREDENTIALS_USR")
+            val ap = System.getenv("ARTIFACTORY_CREDENTIALS_PSW")
+            println("Artifactory username: $au")
+            println("Artifactory key: $ap")
+            username = au
+            password = ap
+        }
+    }
 }
 
 //application dependencies
@@ -26,20 +41,7 @@ dependencies {
     //prometheus
     implementation("io.micrometer:micrometer-core:latest.release")
     implementation("io.micrometer:micrometer-registry-prometheus:latest.release")
-}
 
-tasks {
-    register("fatJar", Jar::class.java) {
-        archiveClassifier.set("all")
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        manifest {
-            attributes("Main-Class" to "ApiServerWithPrometheusKt")
-        }
-        from(configurations.runtimeClasspath.get()
-                .onEach { println("add from dependencies: ${it.name}") }
-                .map { if (it.isDirectory) it else zipTree(it) })
-        val sourcesMain = sourceSets.main.get()
-        sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
-        from(sourcesMain.output)
-    }
+    //atlas
+    implementation("com.capsule:atlas:0.0.0-SNAPSHOT")
 }
