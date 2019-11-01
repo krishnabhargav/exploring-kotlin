@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     val kotlinVersion = "1.3.50"
     id("org.jetbrains.kotlin.jvm") version kotlinVersion
@@ -23,6 +25,13 @@ repositories {
     }
 }
 
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
 //application dependencies
 dependencies {
     //jetbrains & kotlin stuff
@@ -43,5 +52,5 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:latest.release")
 
     //atlas
-    implementation("com.capsule:atlas:0.0.0-SNAPSHOT")
+    implementation("com.capsule:atlas:1.+")
 }
