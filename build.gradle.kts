@@ -33,24 +33,36 @@ tasks.withType<KotlinCompile> {
 }
 
 //application dependencies
+val kotlinExtensionsVersion = "1.3.2"
+val gsonVersion = "2.8.5"
+val sl4jVersion = "1.7.26"
+val javalinVersion = "3.6.0"
+val swaggerCoreVersion = "2.0.9"
+val jacksonKotlinVersion = "2.10.+"
+val redocVersion = "2.0.0-rc.2" //rc.18 doesn't work yet
+val atlasVersion = "1.+"
+
 dependencies {
     //jetbrains & kotlin stuff
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.2")
-    implementation("com.google.code.gson:gson:2.8.5")
-    implementation("org.slf4j:slf4j-simple:1.7.26")
-    implementation("io.javalin:javalin:3.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinExtensionsVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlinExtensionsVersion")
+    implementation("com.google.code.gson:gson:$gsonVersion")
+    implementation("org.slf4j:slf4j-simple:$sl4jVersion")
+    implementation("io.javalin:javalin:$javalinVersion")
 
-    //open api
-    implementation("io.swagger.core.v3:swagger-core:2.0.9")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
+    //openapi
+    implementation("io.swagger.core.v3:swagger-core:$swaggerCoreVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonKotlinVersion")
+    //openapi - enables redoc ui for viewing documentation
+    implementation("org.webjars.npm:js-tokens:5.0.0") //workaround for maven range issue
+    implementation("org.webjars.npm:redoc:$redocVersion")
 
     //prometheus
     implementation("io.micrometer:micrometer-core:latest.release")
     implementation("io.micrometer:micrometer-registry-prometheus:latest.release")
 
     //atlas
-    implementation("com.capsule:atlas:1.+")
+    implementation("com.capsule:atlas:$atlasVersion")
 }

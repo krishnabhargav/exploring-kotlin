@@ -10,6 +10,7 @@ import io.javalin.plugin.openapi.OpenApiPlugin
 import io.javalin.plugin.openapi.annotations.OpenApi
 import io.javalin.plugin.openapi.annotations.OpenApiContent
 import io.javalin.plugin.openapi.annotations.OpenApiResponse
+import io.javalin.plugin.openapi.ui.ReDocOptions
 import io.javalin.plugin.openapi.ui.SwaggerOptions
 import io.micrometer.core.instrument.Metrics
 import io.micrometer.prometheus.PrometheusConfig
@@ -29,10 +30,10 @@ object ApiServerBuilder {
     }
 
     private fun getOpenApiOptions(): OpenApiOptions =
-            OpenApiOptions(Info().description("Karyon Provider Service"))
+            OpenApiOptions(Info().description("<CHANGE THIS>"))
                     .toJsonMapper(toJsonMapper)
                     .path("/swagger-api")
-                    .swagger(SwaggerOptions("/swagger").title("API Documentation"))
+                    .reDoc(ReDocOptions("/redoc").title("API Documentation for <CHANGE THIS>"))
 
     private val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
