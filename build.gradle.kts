@@ -28,7 +28,7 @@ repositories {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.6"
+        jvmTarget = "1.8"
     }
 }
 
@@ -40,7 +40,7 @@ val javalinVersion = "3.6.0"
 val swaggerCoreVersion = "2.0.9"
 val jacksonKotlinVersion = "2.10.+"
 val redocVersion = "2.0.0-rc.2" //rc.18 doesn't work yet
-val atlasVersion = "1.+"
+val atlasVersion = "4.3.0"
 
 dependencies {
     //jetbrains & kotlin stuff
