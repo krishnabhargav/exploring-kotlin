@@ -4,19 +4,16 @@ import arrow.core.None
 import arrow.core.Some
 import com.capsule.atlas.Inputs
 import com.capsule.atlas.Outputs
-import com.capsule.atlas.models.DomainEvent
-import com.capsule.atlas.models.StreamDefinition
-import com.capsule.atlas.models.Versioning
+import com.capsule.atlas.models.*
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
 import java.util.*
-import com.capsule.atlas.models.Result
 
 data class Employee(val id: String, val name: String, val age: Int)
 
 fun main() = runBlocking {
     val url = "eventstore://capsulees/Hello-123?username=admin&password=changeit&isCluster=true&masterOny=false"
-    val sd = StreamDefinition.parse(url) { _ -> "localhost:1113" }
+    val sd = StreamDefinition.parse(url, hostLookup = { _ -> "localhost:1113" })
     println("Sd => $sd")
 
     val employee = Employee(UUID.randomUUID().toString(), "Mario", 5000)
@@ -24,12 +21,13 @@ fun main() = runBlocking {
     for (i in 1..5) {
         val de =
                 DomainEvent(
-                        UUID.randomUUID(),
-                        "Employee", None,
-                        payload,
-                        ByteArray(0),
-                        Versioning.Any,
-                        Instant.now())
+                        id = UUID.randomUUID(),
+                        type = "Employee",
+                        correlationId = null,
+                        data = payload,
+                        metadata = mapOf(),
+                        version = Versioning.Any,
+                        timestamp = Instant.now())
         val writeResult = Outputs.writeWithRetries(sd, de)
         println("Wrote Event to EventStore, Result:$writeResult")
     }

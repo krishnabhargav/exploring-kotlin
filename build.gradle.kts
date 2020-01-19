@@ -28,9 +28,10 @@ repositories {
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "1.6"
+        jvmTarget = "1.8"
     }
 }
+
 
 //application dependencies
 dependencies {
@@ -43,6 +44,9 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:1.7.26")
     implementation("io.javalin:javalin:3.5.0")
 
+    //arrow
+    implementation("io.arrow-kt:arrow-core:0.+")
+
     //open api
     implementation("io.swagger.core.v3:swagger-core:2.0.9")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
@@ -52,5 +56,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:latest.release")
 
     //atlas
-    implementation("com.capsule:atlas:1.+")
+    implementation("com.capsule:atlas:5.+")
+    implementation("com.auth0:java-jwt:3.9.0")
+
 }

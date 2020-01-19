@@ -1,3 +1,6 @@
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.Some
 import kotlinx.coroutines.*
 import java.util.concurrent.CancellationException
 import java.util.concurrent.Executors
@@ -30,7 +33,33 @@ fun <T> Future<T>.asAsync(waitTime: Long = 10): Deferred<T?> {
 }
 
 fun main() = runBlocking {
-    val futures = (0..200).map { futureExample(it, 2000).asAsync(10) }.toList()
-    futures.forEach { it.await() }
-    executor.shutdown()
+    //    val futures = (0..200).map { futureExample(it, 2000).asAsync(10) }.toList()
+//    futures.forEach { it.await() }
+//    executor.shutdown()
+    val x: Int? = 10
+    val y: Int? = 20
+    println(compareValues(x, y))
+
+    val o1 = Some(10)
+    val o2 = Some(20)
+
+    match(o1, o2)
+    val a : Any = 10
+    val asInt: Int? = a as? Int
+    println(asInt)
+}
+
+private fun <T> match(expected: Option<T>, actual: Option<T>): Boolean {
+//    return when {
+//        expected.isDefined() && actual.isDefined() -> true
+//        expected.isEmpty() && actual.isEmpty() -> true
+//        expected === None -> false
+//        actual === None -> false
+//        else -> false
+//    }
+    return when {
+        expected != None && actual != None -> true
+        expected == None && actual == None -> true
+        else -> false
+    }
 }
