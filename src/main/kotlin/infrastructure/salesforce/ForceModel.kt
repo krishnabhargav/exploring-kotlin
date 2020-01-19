@@ -1,6 +1,7 @@
 package infrastructure.salesforce
 
 import com.capsule.atlas.Outputs
+import com.capsule.atlas.WriteResult
 import com.capsule.atlas.models.DomainEvent
 import com.capsule.atlas.models.StreamDefinition
 import com.capsule.atlas.models.getOrElse
@@ -93,5 +94,23 @@ object ForceModel {
             return@fold (c + (f to valueForTheField))
         })
         return contact.copy(customProperties = values)
+    }
+
+    suspend fun updateContact(force: ForceSettings, id: String, updates: Map<String, Any>): WriteResult.Rest {
+        return updateSObject(
+                force = force,
+                resourceString = force.forSObjectUpdate(id, "contact"),
+                updates = updates
+        )
+    }
+
+    private suspend fun updateSObject(force: ForceSettings, resourceString: String, updates: Map<String, Any>): WriteResult.Rest {
+        val sd = StreamDefinition.parse(
+                uri_string = resourceString,
+                hostLookup = force.hostLookup,
+                authLookup = force.security.authLookup
+        )
+        val de = DomainEvent.empty().copy(data = Json.toJsonBytes(updates))
+        return Outputs.writeWithRetries(sd, de).asRest()
     }
 }

@@ -21,8 +21,8 @@ sealed class ForceSecurity {
     data class UsernamePassword(
             val clientId: String = "<consumer key>",
             val email: String = "krishnbhargava@gmail.com",
-            val password: String = "<password><token>",
-            val clientSecret: String = "<consumer secret>") : ForceSecurity() {
+            val password: String = "<password.token>",
+            val clientSecret: String = "<client secret>") : ForceSecurity() {
         private suspend fun fetchAccessToken(): String {
             println("Fetching OAuth Access Token")
             val oauth = "rest://sales-login/services/oauth2/token?grant_type=password&client_id=$clientId&" +

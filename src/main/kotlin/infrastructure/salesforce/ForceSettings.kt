@@ -1,7 +1,6 @@
 package infrastructure.salesforce
 
 import com.capsule.atlas.models.HostLookup
-import infrastructure.salesforce.ForceSecurity
 
 data class ForceSettings(
         private val root: String = "rest://sales-api/services/data/v47.0",
@@ -13,4 +12,7 @@ data class ForceSettings(
 
     fun forContactId(id: String) =
             "${this.root}/sobjects/contact/$id?rest_operation=get&auth=force"
+
+    fun forSObjectUpdate(id: String, sobject: String) =
+            "${this.root}/sobjects/$sobject/$id?rest_operation=post&auth=force&_HttpMethod=PATCH"
 }
