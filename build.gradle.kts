@@ -58,5 +58,5 @@ dependencies {
     //atlas
     implementation("com.capsule:atlas:5.+")
     implementation("com.auth0:java-jwt:3.9.0")
-
+    implementation("org.cometd.java:cometd-java-client:4.+")
 }

@@ -15,4 +15,7 @@ data class ForceSettings(
 
     fun forSObjectUpdate(id: String, sobject: String) =
             "${this.root}/sobjects/$sobject/$id?rest_operation=post&auth=force&_HttpMethod=PATCH"
+
+    fun forCometd() =
+            "https://na114.salesforce.com/cometd/47.0"
 }
