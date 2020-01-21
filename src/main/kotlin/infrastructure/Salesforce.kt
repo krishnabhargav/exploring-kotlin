@@ -3,7 +3,7 @@ package infrastructure
 import infrastructure.salesforce.ForceModel
 import infrastructure.salesforce.ForceSecurity
 import infrastructure.salesforce.ForceSettings
-import infrastructure.salesforce.Subscription
+import infrastructure.salesforce.ForceChangeDataSubscription
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
@@ -19,7 +19,7 @@ private fun CoroutineScope.loadPrivateKeyFromResource(): String {
 fun main() = runBlocking {
     val force = ForceSettings(security = ForceSecurity.Jwt(privateKey = loadPrivateKeyFromResource()))
     val c = ForceModel.loadContact(force, "0033k00003GJlFJAA1")
-    Subscription.start(force)
+    ForceChangeDataSubscription.start(force)
     System.`in`.read()
     println("Exiting!")
 //    val c = ForceModel.loadContact(force, "0033k00003GJlFJAA1")

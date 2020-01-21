@@ -3,9 +3,6 @@ package infrastructure.salesforce
 import com.capsule.atlas.models.Auth
 import kotlinx.coroutines.runBlocking
 import org.cometd.bayeux.Channel
-import org.cometd.bayeux.Message
-import org.cometd.bayeux.Promise
-import org.cometd.bayeux.client.ClientSession
 import org.cometd.bayeux.client.ClientSessionChannel
 import org.cometd.client.BayeuxClient
 import org.cometd.client.transport.ClientTransport
@@ -16,9 +13,7 @@ import org.eclipse.jetty.client.HttpClient
 import org.eclipse.jetty.client.api.Request
 import org.eclipse.jetty.util.ssl.SslContextFactory
 
-object Subscription {
-
-
+object ForceChangeDataSubscription {
     fun start(force: ForceSettings) {
         val sslContextFactory = SslContextFactory.Client()
         val httpClient = HttpClient(sslContextFactory)
@@ -35,21 +30,21 @@ object Subscription {
             }
         }
         val client = BayeuxClient(force.forCometd(), httpTransport)
-        val extension = object : ClientSession.Extension {
-            //var replayId : Map<String, Any> = mapOf("/data/ChangeEvents" to -2 )
-            override fun incoming(session: ClientSession, message: Message.Mutable, promise: Promise<Boolean>?) {
-//                if(message.ext!=null && message.ext["replay"] != null)
-//                    replayId = message.ext["replay"] as Map<String, Any>
-                super.incoming(session, message, promise)
-            }
-            override fun outgoing(session: ClientSession?, message: Message.Mutable, promise: Promise<Boolean>?) {
-                if(message.ext!=null) {
-                    message.ext["replay"] = mapOf("/data/ChangeEvents" to -2 )
-                }
-                super.outgoing(session, message, promise)
-            }
-        }
-        client.addExtension(extension)
+//        val extension = object : ClientSession.Extension {
+//            //var replayId : Map<String, Any> = mapOf("/data/ChangeEvents" to -2 )
+//            override fun incoming(session: ClientSession, message: Message.Mutable, promise: Promise<Boolean>?) {
+////                if(message.ext!=null && message.ext["replay"] != null)
+////                    replayId = message.ext["replay"] as Map<String, Any>
+//                super.incoming(session, message, promise)
+//            }
+//            override fun outgoing(session: ClientSession?, message: Message.Mutable, promise: Promise<Boolean>?) {
+//                if(message.ext!=null) {
+//                    message.ext["replay"] = mapOf("/data/ChangeEvents" to -2 )
+//                }
+//                super.outgoing(session, message, promise)
+//            }
+//        }
+//        client.addExtension(extension)
         val subscribeListener = ClientSessionChannel.MessageListener { _, message ->
             println(message)
         }
@@ -65,7 +60,8 @@ object Subscription {
         if (shaken) {
             println("Handshake completed : subscribing to change events")
             client.getChannel("/data/ChangeEvents").subscribe { _, m ->
-                println("Data ${m.dataAsMap}")
+                //commit user in payload tells us who changed it.
+                println("Change Data => $m")
             }
         }
     }
