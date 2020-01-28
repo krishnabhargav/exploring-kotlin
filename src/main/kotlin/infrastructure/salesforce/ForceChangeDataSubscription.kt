@@ -94,6 +94,7 @@ object ForceChangeDataSubscription {
 
         val client = BayeuxClient(force.forCometd(), httpTransport)
         //for task events, receive all that has happened
+        //default is -1
         //-2 => Subscriber receives all events, including past events that are within the retention window and new events.
         //client.addExtension(ReplayExtension(channel="/data/TaskChangeEvent", replayId=28640))
         client.addExtension(ReplayExtension(channel="/data/ChangeEvents", replayId=28645))
@@ -115,33 +116,37 @@ object ForceChangeDataSubscription {
                 //commit user in payload tells us who changed it.
                 println("ALL-CHANGES ->> $m")
             }
-//            client.getChannel("/data/ContactChangeEvent").subscribe { _, m ->
-//                //commit user in payload tells us who changed it.
-//                println("Contact Changed => $m")
-//            }
-//            client.getChannel("/data/TaskChangeEvent").subscribe { c, m ->
-//                //commit user in payload tells us who changed it.
-//                val cp = ChangePayload.loadFromMessage(channel = m.channel, raw = m.dataAsMap)
-//                println("TaskChangeEvent ->>>> $cp")
-//            }
+            client.getChannel("/data/ContactChangeEvent").subscribe { _, m ->
+                //commit user in payload tells us who changed it.
+                println("Contact Changed => $m")
+            }
+            client.getChannel("/data/TaskChangeEvent").subscribe { c, m ->
+                //commit user in payload tells us who changed it.
+                val cp = ChangePayload.loadFromMessage(channel = m.channel, raw = m.dataAsMap)
+                println("TaskChangeEvent ->>>> $cp")
+            }
         }
     }
 }
 
 class ReplayExtension(private val channel: String, private val replayId : Int) : ClientSession.Extension {
+    //if you persist the replay id here, you shall endup with at-most once semantics
+    //since extension gets called before the message handler.
     private var _incomingReplayId: Int = replayId
     override fun incoming(session: ClientSession, message: Message.Mutable, promise: Promise<Boolean>) {
-        super.incoming(session, message, promise)
         if(message["channel"] == channel) {
             _incomingReplayId =
                     ((message.data as Map<*, *>)["event"] as Map<*, *>)["replayId"] as Int
             println("$channel => Replay($_incomingReplayId)")
         }
+        super.incoming(session, message, promise)
     }
 
     override fun outgoing(session: ClientSession, message: Message.Mutable, promise: Promise<Boolean>) {
         super.outgoing(session, message, promise)
-        if(message["channel"]=="/meta/subscribe" && message["subscription"] == channel) {
+        if(message["channel"]==Channel.META_SUBSCRIBE && message["subscription"] == channel) {
+            //this is the most important piece for proper replay to work.
+            //incoming is used to keep the value updated as upon timeout, we will resubmit the value
             val mp = mapOf(channel to _incomingReplayId)
             if(message["ext"] == null)
                 message["ext"] = mutableMapOf<String, Any>()
