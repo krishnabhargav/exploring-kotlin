@@ -44,7 +44,7 @@ sealed class ForceSecurity {
     //refer to: http://blog.deadlypenguin.com/blog/2019/03/08/jwt-bearer-auth-salesforce-node/
     data class Jwt(
             //clientid/consumer key
-            val iss: String = "",
+            val iss: String = "3MVG9_XwsqeYoueKR95ROR2gBsuKpji69TFLwXbcyPnJLoeUNGjd_Adoa69ztZihs7QxZCStpS_3jMkKuSioQ",
             val sub: String = "krishnbhargava@gmail.com",
             val aud: String = "https://login.salesforce.com",
             private val privateKey: String
